@@ -20,23 +20,33 @@ export default async function InventoryPage() {
     }
 
     return (
-        <div className="container mx-auto py-10">
-            <div className="flex items-center justify-between mb-8">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Inventory</h1>
-                    <p className="text-muted-foreground">
-                        Manage your inventory items, stock levels, and prices.
-                    </p>
+        <div className="min-h-screen bg-slate-50/50 p-8">
+            <div className="container mx-auto max-w-7xl">
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
+                    <div>
+                        <h1 className="text-4xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600">
+                            Inventory
+                        </h1>
+                        <p className="text-muted-foreground mt-2 text-lg">
+                            Manage your stock and track performance.
+                        </p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <form action={logout}>
+                            <Button variant="ghost" className="text-slate-600 hover:text-red-600 hover:bg-red-50">
+                                Log out
+                            </Button>
+                        </form>
+                        <AddItemModal />
+                    </div>
                 </div>
-                <div className="flex items-center gap-4">
-                    <form action={logout}>
-                        <Button variant="outline">Logout</Button>
-                    </form>
-                    <AddItemModal />
+
+                <DashboardStats items={inventory || []} />
+
+                <div className="rounded-xl border bg-white shadow-sm p-6 overflow-hidden">
+                    <DataTable columns={columns} data={inventory || []} />
                 </div>
             </div>
-            <DashboardStats items={inventory || []} />
-            <DataTable columns={columns} data={inventory || []} />
         </div>
     )
 }
