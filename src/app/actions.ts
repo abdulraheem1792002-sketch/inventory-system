@@ -12,9 +12,17 @@ export async function createItem(data: InventoryItem) {
     }
 
     const supabase = await createClient()
+    const {
+        data: { user },
+    } = await supabase.auth.getUser()
+
+    if (!user) {
+        return { error: "You must be logged in to create items" }
+    }
+
     const { error } = await supabase
         .from("inventory")
-        .insert(result.data)
+        .insert({ ...result.data, user_id: user.id })
 
     if (error) {
         console.error("Supabase Error:", error)
@@ -28,6 +36,13 @@ export async function createItem(data: InventoryItem) {
 
 export async function bulkCreateItems(items: InventoryItem[]) {
     const supabase = await createClient()
+    const {
+        data: { user },
+    } = await supabase.auth.getUser()
+
+    if (!user) {
+        return { error: "You must be logged in to import items" }
+    }
 
     // Validate all items
     const validItems = []
@@ -46,7 +61,9 @@ export async function bulkCreateItems(items: InventoryItem[]) {
         return { error: "Validation failed for some items", details: errors }
     }
 
-    const { error } = await supabase.from("inventory").insert(validItems)
+    const itemsWithUser = validItems.map(item => ({ ...item, user_id: user.id }))
+
+    const { error } = await supabase.from("inventory").insert(itemsWithUser)
 
     if (error) {
         console.error("Supabase Error:", error)
@@ -65,10 +82,19 @@ export async function updateItem(id: string, data: InventoryItem) {
     }
 
     const supabase = await createClient()
+    const {
+        data: { user },
+    } = await supabase.auth.getUser()
+
+    if (!user) {
+        return { error: "Unauthorized" }
+    }
+
     const { error } = await supabase
         .from("inventory")
         .update(result.data)
         .eq("id", id)
+        .eq("user_id", user.id) // Ensure user owns the item
 
     if (error) {
         return { error: error.message }
@@ -81,10 +107,19 @@ export async function updateItem(id: string, data: InventoryItem) {
 
 export async function deleteItem(id: string) {
     const supabase = await createClient()
+    const {
+        data: { user },
+    } = await supabase.auth.getUser()
+
+    if (!user) {
+        return { error: "Unauthorized" }
+    }
+
     const { error } = await supabase
         .from("inventory")
         .delete()
         .eq("id", id)
+        .eq("user_id", user.id) // Ensure user owns the item
 
     if (error) {
         return { error: error.message }

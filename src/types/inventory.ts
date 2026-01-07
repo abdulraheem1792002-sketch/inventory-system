@@ -8,6 +8,7 @@ export const inventoryItemSchema = z.object({
     category: z.string().optional(),
     description: z.string().optional(),
     image_url: z.string().optional(), // New field for image storage
+    user_id: z.string().optional(), // Links item to specific user
     created_at: z.string().optional(),
 })
 

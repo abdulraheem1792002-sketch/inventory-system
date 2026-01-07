@@ -15,9 +15,19 @@ export const dynamic = 'force-dynamic'
 
 export default async function InventoryPage() {
     const supabase = await createClient()
+    const {
+        data: { user },
+    } = await supabase.auth.getUser()
+
+    if (!user) {
+        // middleware should handle this, but for type safety
+        return <div>Please log in</div>
+    }
+
     const { data: inventory, error } = await supabase
         .from("inventory")
         .select("*")
+        .eq("user_id", user.id) // Filter by current user
         .order("created_at", { ascending: false })
 
     if (error) {
