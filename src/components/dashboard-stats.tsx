@@ -67,5 +67,5 @@ export function DashboardStats({ items }: DashboardStatsProps) {
             </Card>
         </div>
     )
-    )
+
 }
