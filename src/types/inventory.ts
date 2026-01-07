@@ -7,6 +7,7 @@ export const inventoryItemSchema = z.object({
     price: z.coerce.number().min(0, "Price must be 0 or greater"),
     category: z.string().optional(),
     description: z.string().optional(),
+    image_url: z.string().optional(), // New field for image storage
     created_at: z.string().optional(),
 })
 

@@ -1,13 +1,28 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, MoreHorizontal } from "lucide-react"
+import { ArrowUpDown, MoreHorizontal, ImageIcon } from "lucide-react"
+import Image from "next/image"
 
 import { Button } from "@/components/ui/button"
 import { InventoryActions } from "./inventory-actions"
 import { InventoryItem } from "@/types/inventory"
 
 export const columns: ColumnDef<InventoryItem>[] = [
+    {
+        accessorKey: "image_url",
+        header: "Image",
+        cell: ({ row }) => {
+            const imageUrl = row.getValue("image_url") as string
+            if (!imageUrl) return <div className="h-10 w-10 flex items-center justify-center bg-muted rounded-md"><ImageIcon className="h-4 w-4 text-muted-foreground" /></div>
+            return (
+                <div className="relative h-10 w-10 rounded-md overflow-hidden">
+                    <Image src={imageUrl} alt="Product" fill className="object-cover" />
+                </div>
+            )
+        },
+        enableSorting: false,
+    },
     {
         accessorKey: "name",
         header: ({ column }) => {

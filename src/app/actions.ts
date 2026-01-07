@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache"
 import { createClient } from "@/lib/supabase/server"
 import { InventoryItem, inventoryItemSchema } from "@/types/inventory"
+import { logActivity } from "@/lib/logger"
 
 export async function createItem(data: InventoryItem) {
     const result = inventoryItemSchema.safeParse(data)
@@ -21,7 +22,40 @@ export async function createItem(data: InventoryItem) {
     }
 
     revalidatePath("/inventory")
+    await logActivity("CREATE_ITEM", `Created item: ${result.data.name}`)
     return { success: true }
+}
+
+export async function bulkCreateItems(items: InventoryItem[]) {
+    const supabase = await createClient()
+
+    // Validate all items
+    const validItems = []
+    const errors = []
+
+    for (const item of items) {
+        const result = inventoryItemSchema.safeParse(item)
+        if (result.success) {
+            validItems.push(result.data)
+        } else {
+            errors.push({ item, error: result.error.format() })
+        }
+    }
+
+    if (errors.length > 0) {
+        return { error: "Validation failed for some items", details: errors }
+    }
+
+    const { error } = await supabase.from("inventory").insert(validItems)
+
+    if (error) {
+        console.error("Supabase Error:", error)
+        return { error: error.message }
+    }
+
+    revalidatePath("/inventory")
+    await logActivity("BULK_CREATE", `Created ${validItems.length} items from CSV`)
+    return { success: true, count: validItems.length }
 }
 
 export async function updateItem(id: string, data: InventoryItem) {
@@ -41,6 +75,7 @@ export async function updateItem(id: string, data: InventoryItem) {
     }
 
     revalidatePath("/inventory")
+    await logActivity("UPDATE_ITEM", `Updated item: ${id}`)
     return { success: true }
 }
 
@@ -56,5 +91,6 @@ export async function deleteItem(id: string) {
     }
 
     revalidatePath("/inventory")
+    await logActivity("DELETE_ITEM", `Deleted item: ${id}`)
     return { success: true }
 }

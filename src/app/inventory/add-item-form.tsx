@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { ImageUpload } from "@/components/image-upload"
 import { createItem } from "@/app/actions"
 import { inventoryItemSchema, InventoryItem } from "@/types/inventory"
 
@@ -33,6 +34,7 @@ export function AddItemForm({ onSuccess }: AddItemFormProps) {
             price: 0,
             category: "",
             description: "",
+            image_url: "",
         },
     })
 
@@ -55,6 +57,23 @@ export function AddItemForm({ onSuccess }: AddItemFormProps) {
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <FormField
+                    control={form.control}
+                    name="image_url"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Image</FormLabel>
+                            <FormControl>
+                                <ImageUpload
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    disabled={loading}
+                                />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
                 <FormField
                     control={form.control}
                     name="name"

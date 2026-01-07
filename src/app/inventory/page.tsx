@@ -3,7 +3,12 @@ import { DataTable } from "./data-table"
 import { columns } from "./columns"
 import { AddItemModal } from "./add-item-modal"
 import { DashboardStats } from "@/components/dashboard-stats"
+import { InventoryOverview } from "@/components/charts/inventory-overview"
+import { CategoryDistribution } from "@/components/charts/category-distribution"
+import { ModeToggle } from "@/components/mode-toggle"
 import { Button } from "@/components/ui/button"
+import { BulkImportModal } from "./bulk-import-modal"
+import { ScannerModal } from "./scanner-modal"
 import { logout } from "../auth/actions"
 
 export const dynamic = 'force-dynamic'
@@ -20,11 +25,11 @@ export default async function InventoryPage() {
     }
 
     return (
-        <div className="min-h-screen bg-slate-50/50 p-8">
+        <div className="min-h-screen bg-muted/40 p-8">
             <div className="container mx-auto max-w-7xl">
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
                     <div>
-                        <h1 className="text-4xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600">
+                        <h1 className="text-4xl font-extrabold tracking-tight">
                             Inventory
                         </h1>
                         <p className="text-muted-foreground mt-2 text-lg">
@@ -32,18 +37,26 @@ export default async function InventoryPage() {
                         </p>
                     </div>
                     <div className="flex items-center gap-3">
+                        <ModeToggle />
                         <form action={logout}>
-                            <Button variant="ghost" className="text-slate-600 hover:text-red-600 hover:bg-red-50">
+                            <Button variant="ghost" className="text-muted-foreground hover:text-destructive hover:bg-destructive/10">
                                 Log out
                             </Button>
                         </form>
                         <AddItemModal />
+                        <BulkImportModal />
+                        <ScannerModal />
                     </div>
                 </div>
 
                 <DashboardStats items={inventory || []} />
 
-                <div className="rounded-xl border bg-white shadow-sm p-6 overflow-hidden">
+                <div className="grid gap-4 md:grid-cols-7 mb-8">
+                    <InventoryOverview data={inventory || []} />
+                    <CategoryDistribution data={inventory || []} />
+                </div>
+
+                <div className="rounded-xl border bg-card text-card-foreground shadow-sm p-6 overflow-hidden">
                     <DataTable columns={columns} data={inventory || []} />
                 </div>
             </div>
