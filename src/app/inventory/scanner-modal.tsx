@@ -1,8 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { Scan, TextSearch } from "lucide-react"
+import { Scan, TextSearch, Copy } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -33,11 +34,12 @@ export function ScannerModal() {
         // Since DataTable has client-side filtering, we might need a way to pass it. 
         // But simply showing the code is a good start, or copy to clipboard.
 
-        if (confirm(`Scanned: ${result}. Filter items?`)) {
-            // Dispatch a custom event or update URL which DataTable listens to?
-            // Simplest: Copy to clipboard and focus search.
-            alert(`Code: ${result}\nCopied to clipboard!`)
+        if (confirm(`Scanned: ${result}. Copy to clipboard?`)) {
             navigator.clipboard.writeText(result)
+            toast.success("Copied to clipboard!", {
+                description: `Code: ${result}`,
+                icon: <Copy className="h-4 w-4" />,
+            })
         }
     }
 

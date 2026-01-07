@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Loader2, Upload, X } from "lucide-react"
 import Image from "next/image"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { createClient } from "@/lib/supabase/client"
@@ -34,7 +35,8 @@ export function ImageUpload({ value, onChange, disabled }: ImageUploadProps) {
                 .upload(filePath, file)
 
             if (uploadError) {
-                throw uploadError
+                console.error("Upload Error Details:", uploadError)
+                throw new Error(uploadError.message)
             }
 
             const { data } = supabase.storage
@@ -42,9 +44,12 @@ export function ImageUpload({ value, onChange, disabled }: ImageUploadProps) {
                 .getPublicUrl(filePath)
 
             onChange(data.publicUrl)
+            toast.success("Image uploaded successfully")
         } catch (error) {
             console.error("Error uploading image:", error)
-            alert("Error uploading image")
+            toast.error("Upload failed", {
+                description: error instanceof Error ? error.message : "Unknown error occurred"
+            })
         } finally {
             setUploading(false)
         }
