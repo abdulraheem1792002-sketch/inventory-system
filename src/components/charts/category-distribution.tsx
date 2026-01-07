@@ -32,7 +32,7 @@ export function CategoryDistribution({ data }: CategoryDistributionProps) {
     ]
 
     return (
-        <Card className="col-span-3">
+        <Card className="col-span-7 md:col-span-3">
             <CardHeader>
                 <CardTitle>Category Distribution</CardTitle>
             </CardHeader>

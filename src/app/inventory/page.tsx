@@ -36,7 +36,7 @@ export default async function InventoryPage() {
                             Manage your stock and track performance.
                         </p>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 flex-wrap">
                         <ModeToggle />
                         <form action={logout}>
                             <Button variant="ghost" className="text-muted-foreground hover:text-destructive hover:bg-destructive/10">
@@ -56,7 +56,7 @@ export default async function InventoryPage() {
                     <CategoryDistribution data={inventory || []} />
                 </div>
 
-                <div className="rounded-xl border bg-card text-card-foreground shadow-sm p-6 overflow-hidden">
+                <div className="rounded-xl border bg-card text-card-foreground shadow-sm p-6 overflow-x-auto">
                     <DataTable columns={columns} data={inventory || []} />
                 </div>
             </div>

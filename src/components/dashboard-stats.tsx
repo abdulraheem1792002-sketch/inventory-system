@@ -23,53 +23,49 @@ export function DashboardStats({ items }: DashboardStatsProps) {
 
     return (
         <div className="grid gap-4 md:grid-cols-3 mb-8">
-            <Card className="relative overflow-hidden border-none bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-xl">
+            <Card className="relative overflow-hidden shadow-md">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium text-blue-100">Total Value</CardTitle>
-                    <DollarSign className="h-6 w-6 text-blue-200 opacity-75" />
+                    <CardTitle className="text-sm font-medium">Total Value</CardTitle>
+                    <DollarSign className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                    <div className="text-3xl font-bold">{formattedTotalValue}</div>
-                    <p className="text-xs text-blue-100 mt-1 opacity-80">
-                        Total assets in stock
+                    <div className="text-2xl font-bold">{formattedTotalValue}</div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                        +20.1% from last month
                     </p>
-                    <div className="absolute right-[-20px] bottom-[-20px] rotate-[-15deg] opacity-10">
-                        <DollarSign className="h-32 w-32" />
-                    </div>
                 </CardContent>
             </Card>
 
-            <Card className="relative overflow-hidden border-none bg-gradient-to-br from-purple-500 to-purple-600 text-white shadow-xl">
+            <Card className="relative overflow-hidden shadow-md">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium text-purple-100">Total Items</CardTitle>
-                    <Package className="h-6 w-6 text-purple-200 opacity-75" />
+                    <CardTitle className="text-sm font-medium">Total Items</CardTitle>
+                    <Package className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                    <div className="text-3xl font-bold">{totalItems}</div>
-                    <p className="text-xs text-purple-100 mt-1 opacity-80">
-                        Unique products available
+                    <div className="text-2xl font-bold">{totalItems}</div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                        Across 4 categories
                     </p>
-                    <div className="absolute right-[-20px] bottom-[-20px] rotate-[-15deg] opacity-10">
-                        <Package className="h-32 w-32" />
-                    </div>
                 </CardContent>
             </Card>
 
-            <Card className={`relative overflow-hidden border-none shadow-xl ${lowStockItems > 0 ? "bg-gradient-to-br from-red-500 to-red-600" : "bg-gradient-to-br from-emerald-500 to-emerald-600"} text-white`}>
+            <Card className="relative overflow-hidden shadow-md">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium text-white/90">Low Stock Alerts</CardTitle>
-                    <AlertTriangle className="h-6 w-6 text-white/80" />
+                    <CardTitle className="text-sm font-medium">Low Stock Alerts</CardTitle>
+                    <AlertTriangle className={`h-4 w-4 ${lowStockItems > 0 ? "text-destructive" : "text-muted-foreground"}`} />
                 </CardHeader>
                 <CardContent>
-                    <div className="text-3xl font-bold">{lowStockItems}</div>
-                    <p className="text-xs text-white/90 mt-1 opacity-80">
-                        {lowStockItems > 0 ? "Items require attention" : "Everything looks good"}
+                    <div className="text-2xl font-bold">{lowStockItems}</div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                        {lowStockItems > 0 ? (
+                            <span className="text-destructive font-medium">{lowStockItems} items need attention</span>
+                        ) : (
+                            "Inventory levels are healthy"
+                        )}
                     </p>
-                    <div className="absolute right-[-20px] bottom-[-20px] rotate-[-15deg] opacity-10">
-                        <AlertTriangle className="h-32 w-32" />
-                    </div>
                 </CardContent>
             </Card>
         </div>
+    )
     )
 }
