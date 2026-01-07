@@ -37,21 +37,53 @@ export async function middleware(request: NextRequest) {
         data: { user },
     } = await supabase.auth.getUser()
 
+    if (user) {
+        console.log("Middleware User Debug:", {
+            id: user.id,
+            email: user.email,
+            confirmed_at: user.email_confirmed_at,
+            app_metadata: user.app_metadata,
+            user_metadata: user.user_metadata
+        })
+    }
+
     const path = request.nextUrl.pathname
 
     // Protect inventory routes
-    if (path.startsWith("/inventory") && !user) {
-        return NextResponse.redirect(new URL("/login", request.url))
+    if (path.startsWith("/inventory")) {
+        if (!user) {
+            return NextResponse.redirect(new URL("/login", request.url))
+        }
+        // Check if email is verified
+        if (!user.email_confirmed_at) {
+            return NextResponse.redirect(new URL("/verify-email", request.url))
+        }
+    }
+
+    // Handle verify-email page
+    if (path.startsWith("/verify-email")) {
+        if (!user) {
+            return NextResponse.redirect(new URL("/login", request.url))
+        }
+        if (user.email_confirmed_at) {
+            return NextResponse.redirect(new URL("/inventory", request.url))
+        }
     }
 
     // Redirect logged-in users away from login page
     if (path.startsWith("/login") && user) {
+        if (!user.email_confirmed_at) {
+            return NextResponse.redirect(new URL("/verify-email", request.url))
+        }
         return NextResponse.redirect(new URL("/inventory", request.url))
     }
 
     // Root path redirect - slightly different logic to handle initial load
     if (path === "/") {
         if (user) {
+            if (!user.email_confirmed_at) {
+                return NextResponse.redirect(new URL("/verify-email", request.url))
+            }
             return NextResponse.redirect(new URL("/inventory", request.url))
         } else {
             return NextResponse.redirect(new URL("/login", request.url))
