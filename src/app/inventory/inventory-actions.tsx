@@ -4,6 +4,7 @@ import { useState } from "react"
 import { MoreHorizontal } from "lucide-react"
 import { InventoryItem } from "@/types/inventory"
 import { Button } from "@/components/ui/button"
+import { toast } from "sonner"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -53,7 +54,12 @@ export function InventoryActions({ item }: InventoryActionsProps) {
                         className="text-destructive"
                         onClick={async () => {
                             if (item.id && confirm("Are you sure you want to delete this item?")) {
-                                await deleteItem(item.id)
+                                const result = await deleteItem(item.id)
+                                if (result.error) {
+                                    toast.error(result.error)
+                                } else {
+                                    toast.success("Item deleted successfully")
+                                }
                             }
                         }}
                     >

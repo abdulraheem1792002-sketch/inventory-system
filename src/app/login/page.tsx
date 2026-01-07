@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useSearchParams } from "next/navigation"
-import { Package2, Lock, Mail, ArrowRight } from "lucide-react"
+import { Package2, Lock, Mail, ArrowRight, User, UserCircle } from "lucide-react"
 
 function LoginContent() {
     const [isLogin, setIsLogin] = useState(true)
@@ -43,6 +43,51 @@ function LoginContent() {
                     </div>
                 )}
                 <form className="grid gap-4">
+                    {!isLogin && (
+                        <>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="grid gap-2">
+                                    <Label htmlFor="firstName" className="text-slate-200">First Name</Label>
+                                    <div className="relative">
+                                        <User className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                                        <Input
+                                            id="firstName"
+                                            name="firstName"
+                                            placeholder="John"
+                                            required
+                                            className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus-visible:ring-primary/50 focus-visible:border-primary/50"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="lastName" className="text-slate-200">Last Name</Label>
+                                    <div className="relative">
+                                        <User className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                                        <Input
+                                            id="lastName"
+                                            name="lastName"
+                                            placeholder="Doe"
+                                            required
+                                            className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus-visible:ring-primary/50 focus-visible:border-primary/50"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="username" className="text-slate-200">Username</Label>
+                                <div className="relative">
+                                    <UserCircle className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                                    <Input
+                                        id="username"
+                                        name="username"
+                                        placeholder="johndoe123"
+                                        required
+                                        className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus-visible:ring-primary/50 focus-visible:border-primary/50"
+                                    />
+                                </div>
+                            </div>
+                        </>
+                    )}
                     <div className="grid gap-2">
                         <Label htmlFor="email" className="text-slate-200">Email</Label>
                         <div className="relative">
@@ -70,6 +115,21 @@ function LoginContent() {
                             />
                         </div>
                     </div>
+                    {!isLogin && (
+                        <div className="grid gap-2">
+                            <Label htmlFor="confirmPassword" className="text-slate-200">Confirm Password</Label>
+                            <div className="relative">
+                                <Lock className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                                <Input
+                                    id="confirmPassword"
+                                    name="confirmPassword"
+                                    type="password"
+                                    required
+                                    className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus-visible:ring-primary/50 focus-visible:border-primary/50"
+                                />
+                            </div>
+                        </div>
+                    )}
                     <Button
                         formAction={isLogin ? login : signup}
                         className="w-full mt-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg transition-all duration-200 hover:scale-[1.02]"

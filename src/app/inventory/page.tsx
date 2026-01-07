@@ -10,6 +10,9 @@ import { Button } from "@/components/ui/button"
 import { BulkImportModal } from "./bulk-import-modal"
 import { ScannerModal } from "./scanner-modal"
 import { logout } from "../auth/actions"
+import Link from "next/link"
+import { History } from "lucide-react"
+import { ExportButton } from "./export-button"
 
 export const dynamic = 'force-dynamic'
 
@@ -47,6 +50,11 @@ export default async function InventoryPage() {
                         </p>
                     </div>
                     <div className="flex items-center gap-3 flex-wrap">
+                        <Button variant="outline" asChild>
+                            <Link href="/inventory/history">
+                                <History className="mr-2 h-4 w-4" /> History
+                            </Link>
+                        </Button>
                         <ModeToggle />
                         <form action={logout}>
                             <Button variant="ghost" className="text-muted-foreground hover:text-destructive hover:bg-destructive/10">
@@ -54,6 +62,7 @@ export default async function InventoryPage() {
                             </Button>
                         </form>
                         <AddItemModal />
+                        <ExportButton data={inventory || []} />
                         <BulkImportModal />
                         <ScannerModal />
                     </div>

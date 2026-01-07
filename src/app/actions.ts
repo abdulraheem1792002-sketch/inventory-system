@@ -102,6 +102,16 @@ export async function updateItem(id: string, data: InventoryItem) {
 
     revalidatePath("/inventory")
     await logActivity("UPDATE_ITEM", `Updated item: ${id}`)
+
+    // Check for low stock alert
+    if (result.data.quantity <= 5) {
+        // Send to current user's email
+        // Note: In a real app, you might want to send to a specific admin email or the item owner
+        await import("@/lib/email").then(mod =>
+            mod.sendLowStockAlert(user.email!, result.data.name, result.data.quantity)
+        )
+    }
+
     return { success: true }
 }
 
@@ -113,6 +123,12 @@ export async function deleteItem(id: string) {
 
     if (!user) {
         return { error: "Unauthorized" }
+    }
+
+    // Check for admin role
+    const role = user.user_metadata.role
+    if (role !== 'admin') {
+        return { error: "Permission denied: Only admins can delete items" }
     }
 
     const { error } = await supabase
