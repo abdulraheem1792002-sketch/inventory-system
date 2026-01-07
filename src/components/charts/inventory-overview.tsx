@@ -46,6 +46,7 @@ export function InventoryOverview({ data }: InventoryOverviewProps) {
                                 contentStyle={{
                                     backgroundColor: 'hsl(var(--card))',
                                     border: '1px solid hsl(var(--border))',
+                                    color: 'hsl(var(--foreground))',
                                     borderRadius: '6px'
                                 }}
                             />
