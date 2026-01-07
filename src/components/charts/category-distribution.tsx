@@ -23,12 +23,13 @@ export function CategoryDistribution({ data }: CategoryDistributionProps) {
     }))
 
     const COLORS = [
-        "#0088FE",
-        "#00C49F",
-        "#FFBB28",
-        "#FF8042",
-        "#8884d8",
-        "#82ca9d",
+        "#3b82f6", // blue-500
+        "#10b981", // emerald-500
+        "#f59e0b", // amber-500
+        "#ef4444", // red-500
+        "#8b5cf6", // violet-500
+        "#ec4899", // pink-500
+        "#06b6d4", // cyan-500
     ]
 
     return (
