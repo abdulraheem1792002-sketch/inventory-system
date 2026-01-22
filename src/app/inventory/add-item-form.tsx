@@ -4,6 +4,8 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2 } from "lucide-react"
+import { toast } from "sonner"
+import { saveOfflineItem } from "@/lib/offline-store"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -40,18 +42,54 @@ export function AddItemForm({ onSuccess }: AddItemFormProps) {
 
     async function onSubmit(data: InventoryItem) {
         setLoading(true)
-        const result = await createItem(data)
-        setLoading(false)
 
-        if (result.error) {
-            // TODO: Handle error nicely (toast)
-            console.error(result.error)
-            alert("Failed to create item")
+        // Helper to save offline
+        const saveToOffline = async () => {
+            try {
+                await saveOfflineItem(data)
+                toast("Saved offline", {
+                    description: "Item will be synced when you are back online",
+                })
+                form.reset()
+                onSuccess()
+            } catch (error) {
+                console.error("Failed to save offline", error)
+                toast.error("Failed to save offline")
+            }
+        }
+
+        if (!navigator.onLine) {
+            await saveToOffline()
+            setLoading(false)
             return
         }
 
-        form.reset()
-        onSuccess()
+        try {
+            const result = await createItem(data)
+
+            if (result.error) {
+                console.error("Server Action Error:", result.error)
+
+                // If error suggests auth/connection issue, fallback to offline
+                const errorStr = JSON.stringify(result.error)
+                if (errorStr.includes("logged in") || errorStr.includes("Unauthorized") || errorStr.includes("fetch")) {
+                    toast("Connection failed. Saving offline...", { icon: "📡" })
+                    await saveToOffline()
+                } else {
+                    toast.error("Failed to create item")
+                }
+            } else {
+                form.reset()
+                onSuccess()
+            }
+        } catch (error) {
+            // Catches network errors (e.g. server down)
+            console.error("Network error submitting form:", error)
+            toast("Network error. Saving offline...", { icon: "📡" })
+            await saveToOffline()
+        }
+
+        setLoading(false)
     }
 
     return (

@@ -125,11 +125,7 @@ export async function deleteItem(id: string) {
         return { error: "Unauthorized" }
     }
 
-    // Check for admin role
-    const role = user.user_metadata.role
-    if (role !== 'admin') {
-        return { error: "Permission denied: Only admins can delete items" }
-    }
+
 
     const { error } = await supabase
         .from("inventory")
